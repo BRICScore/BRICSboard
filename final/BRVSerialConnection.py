@@ -18,11 +18,12 @@ pids = {"BRV": 5741,
 name = "BRV"
 
 class BRVSerialConnection:
-    def __init__(self, service, filename):
+    def __init__(self, service, filename, queue):
         self.name = name  # brv board name
         self.backup_file_name = self.getBackupFileName(filename)
         self.ble_service = service
         self.is_brv_done = True
+        self.queue = queue
 
         while True:
             try:
@@ -41,7 +42,9 @@ class BRVSerialConnection:
                             with open(self.backup_file_name, "ab") as backup_file:
                                 backup_file.write(data)
                                 # changing bluetooth characteristic
-                                self.ble_service.update_BRV_value(data)
+                                # wstawienie do kolejki danych do wyslania
+                                self.queue.put(data)
+                                # self.ble_service.update_BRV_value(data)
                         else:
                             print(f"BRICS board serial: no data recieved from {name}")
                             continue
