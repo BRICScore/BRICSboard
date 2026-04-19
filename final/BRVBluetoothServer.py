@@ -2,6 +2,7 @@ import asyncio
 import serial
 import os
 import serial.tools.list_ports
+from Queue import Queue
 from bluez_peripheral.advert import Advertisement
 from bluez_peripheral.util import Adapter
 from bluez_peripheral.util import get_message_bus, is_bluez_available
@@ -18,10 +19,11 @@ pids = {"BRV": 5741,
 name = "BRV"
 
 class BRVBluetoothServer:
-    def __init__(self, service, done):
+    def __init__(self, service, queue):
         self.name = name  # brv board name
         self.ble_service = service
-        self.is_brv_done = done
+        self.is_brv_done = True
+        self.queue = queue
 
         asyncio.run(self.register_bluetooth())
 
@@ -72,8 +74,9 @@ class BRVBluetoothServer:
         print("BRV board bluetooth: Registering done")
 
         while self.is_brv_done:
-            # waiting for finished brv transmission signal
-            await asyncio.sleep(10)
+            self.ble_service.update_BRV_value(self.queue.get())
+            self.queue.task_done()
+            await asyncio.sleep(1)
 
         await bus.wait_for_disconnect()
         print("BRV board bluetooth: Disconnected")
