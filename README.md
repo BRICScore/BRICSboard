@@ -21,7 +21,7 @@ connecting it to BRV is unplugged.
 3. After boot connect to it using ssh and execute following commands:
     - `ls brv_board/test/env/`
     - `source bin/activate`
-    - `python main.py`
+    - `python main.py data.txt`
 4. When communicates visible in console inform you that the bluetooth server is registered
 you can run the brv data processing program with a following command:
 
