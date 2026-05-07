@@ -7,7 +7,7 @@ import argparse
 from pathlib import Path
 from threading import Thread
 
-from Driver.data_readers.middleware import MiddlewareBoardDataReader
+from data_readers.middleware import MiddlewareBoardDataReader
 from data_readers.file import FileReader
 from data_savers.jsonl import JsonlDataSaver
 from data_readers.com_port import ComPortDataReader

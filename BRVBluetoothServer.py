@@ -11,7 +11,7 @@ from bluez_peripheral.agent import NoIoAgent
 from BRVDataService import BRVDataService
 
 BRA_OUTPUT_STRUCT_SIZE_BYTES = 94
-BRAOUT_CHAR_UUID = "2137"
+BRAOUT_CHAR_UUID = "2459"
 
 pids = {"BRV": 5741,
         "BRV2": 5742}
@@ -26,6 +26,7 @@ class BRVBluetoothServer:
         self.queue = queue
 
         asyncio.run(self.register_bluetooth())
+
 
     def close_server(self):
         self.is_brv_done = False
@@ -56,7 +57,7 @@ class BRVBluetoothServer:
             print("BRV board bluetooth: No necessary adapters, bluetooth is aborting...")
             await bus.wait_for_disconnect()
             print("BRV board bluetooth: Bus disconnected")
-            return
+            sys.exit()
 
         await self.ble_service.register(bus, adapter=adapter)
 
@@ -64,11 +65,11 @@ class BRVBluetoothServer:
 
         agent = NoIoAgent()
 
-        # this needs sudo to work - hopefully thats not true
         await agent.register(bus)
 
-        # timeout is set to 60s but can be potentialy be changed
-        advert = Advertisement("BRV", [BRAOUT_CHAR_UUID], appearance=0x0340, timeout=60)
+
+        # timeout is set to infinity
+        advert = Advertisement("BRV", [BRAOUT_CHAR_UUID], appearance=0x0340, timeout=0)
         await advert.register(bus, adapter)
 
         print("BRV board bluetooth: Registering done")
@@ -79,13 +80,13 @@ class BRVBluetoothServer:
             part1 = arr[:47]
             part2 = arr[47:]
             self.ble_service.update_BRV_value(bytes(part1))
-            await asyncio.sleep(0.1)
+            await asyncio.sleep(0.04)
 
             self.ble_service.update_BRV_value(bytes(part2))
 
             self.queue.task_done()
             print("BRV board bluetooth: queue has ", self.queue.qsize(), " elements")
-            await asyncio.sleep(0.1)
+            await asyncio.sleep(0.04)
 
         await bus.wait_for_disconnect()
         print("BRV board bluetooth: Disconnected")

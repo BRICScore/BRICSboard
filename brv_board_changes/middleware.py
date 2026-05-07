@@ -5,8 +5,7 @@ from bleak import BleakClient, BleakScanner
 
 from data_containers.bra_output_struct import BraOutputStruct, BRA_OUTPUT_STRUCT_SIZE_BYTES
 
-BRAOUT_CHAR_UUID = "2137"
-
+BRAOUT_CHAR_UUID = "2459"
 
 class MiddlewareBoardDataReader:
 
@@ -35,7 +34,6 @@ class MiddlewareBoardDataReader:
                     await asyncio.sleep(60)
 
     def indication_handler(self, characteristic, data):
-        print(self.semaphore, " test ")
         if self.semaphore == 0:
             self.half_value = data
             self.semaphore = 1
@@ -45,6 +43,7 @@ class MiddlewareBoardDataReader:
             data_struct = BraOutputStruct.from_buffer_copy(value)
             self.socket.send_string(json.dumps(data_struct.get_dict()))
             self.semaphore = 0
+            print("recieved full package")
 
 
 

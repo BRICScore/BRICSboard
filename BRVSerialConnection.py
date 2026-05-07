@@ -19,7 +19,7 @@ name = "BRV"
 class BRVSerialConnection:
     def __init__(self, filename, queue):
         self.name = name  # brv board name
-        self.backup_file_name = self.getBackupFileName(filename)
+        self.backup_file_name = "data.txt"
         self.is_brv_done = True
         self.queue = queue
 
@@ -37,7 +37,7 @@ class BRVSerialConnection:
                     while True:
                         data = ser.read(BRA_OUTPUT_STRUCT_SIZE_BYTES)
                         if data:
-                            with open(self.backup_file_name, "ab") as backup_file:
+                            with open(self.backup_file_name, "wb") as backup_file:
                                 backup_file.write(data)
                                 # wstawienie do kolejki danych do wyslania
                                 self.queue.put(data)
@@ -58,22 +58,14 @@ class BRVSerialConnection:
         return resultPorts
 
     def getBackupFileName(self, filename):
-        name = "data"
-        path = os.getcwd()
-        if os.name == "nt":
-            result = "\\backup\\"
-        else:
-            result = "/backup/"
-        path = path + result
-        dir_list = os.listdir(path)
-        count = len(dir_list)
-        name = name + str(count) + ".txt"
+        result = "/backup/"
         result = result[1:]
         if filename is not None:
             return result + filename
-        f = open(result + name, "x")
+        name = "test1.txt"
+        f = open(name, "w")
         f.close()
-        return result + name
+        return name
 
 if __name__ == "__main__":
     BRVSerial()

@@ -6,8 +6,7 @@ from bluez_peripheral.advert import Advertisement
 from bluez_peripheral.util import Adapter
 import asyncio
 
-BRAOUT_CHAR_UUID = "2137"
-BRAOUT_SERV_UUID = "2138"
+BRAOUT_CHAR_UUID = "2459"
 BRA_OUTPUT_STRUCT_SIZE_BYTES = 94
 
 class BRVDataService(Service):
