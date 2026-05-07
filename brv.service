@@ -1,0 +1,15 @@
+[Unit]
+Description=BRV middleware autoload 
+After=dbus.service
+Requires=dbus.service
+
+[Service] 
+Type=exec
+ExecStart=/usr/local/sbin/brvOpenConnection.sh 
+Restart=always
+RestartMode=direct
+BusName=org.bluez.Adapter1
+RemainAfterExit=no
+
+[Install] 
+WantedBy=multi-user.target
