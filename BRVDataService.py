@@ -14,7 +14,7 @@ class BRVDataService(Service):
         super().__init__(BRAOUT_CHAR_UUID, True)
 
     # function called when reading characteristic - placeholder
-    @characteristic(BRAOUT_CHAR_UUID, CharFlags.NOTIFY | CharFlags.READ)
+    @characteristic(BRAOUT_CHAR_UUID, CharFlags.INDICATE | CharFlags.READ)
     def brv_characteristic(self):
         pass
 
